@@ -4,14 +4,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import numpy as np
-
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 data_dict = pickle.load(open('./data.pickle', 'rb'))
 
-data = np.asarray(data_dict['data'])
+# data = np.asarray(data_dict['data'])
+
+max_sequence_length = 42  # 데이터에 따라 이 값을 조정하세요
+data_padded = pad_sequences(data_dict['data'], maxlen=max_sequence_length, padding='post', dtype='float32')
 labels = np.asarray(data_dict['labels'])
 
-x_train, x_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, shuffle=True, stratify=labels)
+x_train, x_test, y_train, y_test = train_test_split(data_padded, labels, test_size=0.2, shuffle=True, stratify=labels)
 
 model = RandomForestClassifier()
 
